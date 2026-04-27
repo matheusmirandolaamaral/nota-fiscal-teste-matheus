@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using nota_fiscal_teste.DTO;
 using nota_fiscal_teste.Model;
 using nota_fiscal_teste.Services;
 using Serilog;
@@ -72,8 +73,30 @@ namespace nota_fiscal_teste.Controllers
         {
             _logger.LogInformation("Deleting product with ID {id}", id);
             _productService.Delete(id);
-             _logger.LogDebug("Product with ID {id} deleted successfully", id);
+            _logger.LogDebug("Product with ID {id} deleted successfully", id);
             return NoContent();
+        }
+
+
+        [HttpPost("{id}/decrease-stock")]
+        public IActionResult DecreaseStock(long id, [FromBody] DecreaseStockDTO decreaseStock)
+        {
+            _logger.LogInformation("Decreasing stock for product with ID {id} by quantity {quantity}", id , decreaseStock.Quantity);
+            try
+            {
+                var updatedProduct = _productService.DecreaseStock(id, decreaseStock.Quantity);
+                _logger.LogDebug("Stock for product with ID {id} decreased successfully", id);
+                return Ok(updatedProduct);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound($"Product with ID {id} not found");
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning("Failed to decrease stock for product with ID {id}: {message}", id, ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

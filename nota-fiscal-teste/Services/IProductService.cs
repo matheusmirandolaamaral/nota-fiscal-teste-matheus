@@ -9,5 +9,6 @@ namespace nota_fiscal_teste.Services
         Product Create(Product product);
         Product Update(Product product);
         void Delete(long id);
+        Product DecreaseStock(long id, int quantity);
     }
 }

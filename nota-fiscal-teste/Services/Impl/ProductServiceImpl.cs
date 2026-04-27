@@ -33,5 +33,25 @@ namespace nota_fiscal_teste.Services.Impl
         {
             _repository.Delete(id);
         }
+
+        public Product DecreaseStock(long id, int quantity)
+        {
+            if (quantity <= 0)
+            {
+                throw new Exception("Quantity must be greater than zero");
+            }
+            var product = _repository.FindById(id);
+            if (product == null)
+            {
+                throw new Exception("Product not found");
+            }
+            if(product.Quantity < quantity)
+            {
+                throw new Exception("Insufficient stock");
+            } 
+
+            product.Quantity -= quantity;
+            return _repository.Update(product);
+        }
     }
 }
