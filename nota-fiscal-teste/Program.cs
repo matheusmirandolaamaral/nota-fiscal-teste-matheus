@@ -12,6 +12,7 @@ builder.AddSerilogConfiguration();
 
 builder.Services.AddControllers();
 
+builder.Services.AddEvolveConfiguration(builder.Configuration, builder.Environment);
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
 
 builder.Services.AddScoped<IProductRepository, ProductRepositoryImpl>();
